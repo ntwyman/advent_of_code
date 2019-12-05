@@ -27,9 +27,35 @@ defmodule Day2 do
         |> :array.to_list()
     end
 
+
+
     defp execute([op1, _addr1, _addr2 | rest], noun, verb) do
         run([ op1, noun, verb ] ++ rest)
         |> hd
+    end
+
+    defp find_noun_and_verb(_program, _target, _noun, verb) when verb >= 100, do: 100
+    defp find_noun_and_verb(program, target, noun, verb) do
+        if execute(program, noun, verb) == target do
+            verb
+        else
+            find_noun_and_verb(program, target, noun, verb + 1)
+        end
+    end
+   
+    defp find_noun_and_verb(_program, _target, noun) when noun >= 100, do: {100, 100} 
+    defp find_noun_and_verb(program, target, noun) do
+        verb = find_noun_and_verb(program, target, noun, 0)
+        if verb < 100 do
+            { noun, verb }
+        else
+            find_noun_and_verb(program, target, noun + 1)
+        end
+    end
+
+    defp find_noun_and_verb(program, target) do
+        {noun, verb} = find_noun_and_verb(program, target, 0)
+        noun * 100 + verb
     end
 
      def part1(file) do
@@ -37,7 +63,8 @@ defmodule Day2 do
         |> execute(12, 2)
     end
 
-    # def part2(file) do
-    #     program = load_program
-    # end
+    def part2(file) do
+        load_program(file)
+        |> find_noun_and_verb(19690720)
+    end
 end
