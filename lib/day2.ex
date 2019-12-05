@@ -14,6 +14,10 @@ defmodule Day2 do
         end
     end
 
+    defp patch1202([op1, _addr1, _addr2 | rest]) do
+        [ op1, 12, 2 ] ++ rest
+    end
+
     def run(program) do
         :array.to_list(run(:array.from_list(program), 0))
     end
@@ -23,6 +27,7 @@ defmodule Day2 do
         |> String.trim()
         |> String.split(",")
         |> Enum.map(&String.to_integer/1)
+        |> patch1202()
         |> run()
         |> hd
     end
