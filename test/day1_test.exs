@@ -1,7 +1,6 @@
-defmodule Aoc2019.Day1Test do
-  alias Aoc2019.Day1
+defmodule Day1Test do
   use ExUnit.Case
-  doctest Aoc2019.Day1
+  doctest Day1
 
 
   test "Day1 Part1" do
