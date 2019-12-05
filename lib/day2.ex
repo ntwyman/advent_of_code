@@ -19,7 +19,8 @@ defmodule Day2 do
     end
 
     def part1(file) do
-        String.trim(File.read!(file))
+        File.read!(file)
+        |> String.trim()
         |> String.split(",")
         |> Enum.map(&String.to_integer/1)
         |> run()
