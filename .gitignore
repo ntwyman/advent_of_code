@@ -22,6 +22,5 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 aoc_2019-*.tar
 
-# Ignore command line binary
-aoc_2019
-
+# Trying out ElixirLS vscode plugin
+/.elixir_ls/
