@@ -27,8 +27,6 @@ defmodule Day2 do
         |> :array.to_list()
     end
 
-
-
     defp execute([op1, _addr1, _addr2 | rest], noun, verb) do
         run([ op1, noun, verb ] ++ rest)
         |> hd
