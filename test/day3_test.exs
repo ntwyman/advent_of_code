@@ -17,4 +17,27 @@ defmodule Day3Test do
              %Extent{min_x: 4, min_y: -3, max_x: 4}
            ]
   end
+
+  test "Day3 Part1 intersects" do
+    assert Day3.intersects(
+             %Extent{min_x: 0, min_y: 3, max_x: 4, max_y: 3},
+             %Extent{min_x: 1, min_y: 0, max_x: 1, max_y: 5}
+           ) == [%Point{x: 1, y: 3}]
+
+    assert Day3.intersects(
+             %Extent{min_x: 0, min_y: 3, max_x: 4, max_y: 3},
+             %Extent{min_x: 1, min_y: 3, max_x: 7, max_y: 3}
+           ) == [%Point{x: 1, y: 3}, %Point{x: 2, y: 3}, %Point{x: 3, y: 3}, %Point{x: 4, y: 3}]
+
+    assert Day3.intersects(
+             %Extent{min_x: 13, min_y: 5, max_x: 13, max_y: 11},
+             %Extent{min_x: 13, min_y: 7, max_x: 13, max_y: 13}
+           ) == [
+             %Point{x: 13, y: 7},
+             %Point{x: 13, y: 8},
+             %Point{x: 13, y: 9},
+             %Point{x: 13, y: 10},
+             %Point{x: 13, y: 11}
+           ]
+  end
 end
