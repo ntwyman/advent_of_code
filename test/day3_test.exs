@@ -8,13 +8,14 @@ defmodule Day3Test do
     assert Day3.segment(%Point{}, "R4") == {%Point{x: 4}, %Extent{max_x: 4}}
 
     assert Day3.segment(%Point{x: 15, y: 23}, "D2") ==
-             {%Point{x: 15, y: 21}, %Extent{min_x: 15, min_y: 21, max_x: 15, max_y: 23}}
+             {%Point{x: 15, y: 21},
+              %Extent{min_x: 15, min_y: 21, max_x: 15, max_y: 23, start_x: 15, start_y: 23}}
   end
 
   test "Day3 Part1 segments" do
     assert Day3.segments(["R4", "D3"], %Point{}) == [
              %Extent{max_x: 4},
-             %Extent{min_x: 4, min_y: -3, max_x: 4}
+             %Extent{min_x: 4, min_y: -3, max_x: 4, start_x: 4}
            ]
   end
 
@@ -48,15 +49,27 @@ defmodule Day3Test do
     assert(Day3.crossings(%Extent{max_x: 75}, %Extent{min_y: 62, max_x: 66, max_y: 62}) == [])
   end
 
-  test "Day3 Part2 distance" do
-    assert Day3.distance(
+  test "Day3 Part1 manhattan_distance" do
+    assert Day3.manhattan_distance(
              "R75,D30,R83,U83,L12,D49,R71,U7,L72",
              "U62,R66,U55,R34,D71,R55,D58,R83"
            ) == 159
+
+    assert Day3.manhattan_distance(
+             "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51",
+             "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
+           ) == 135
   end
 
-  assert Day3.distance(
-           "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51",
-           "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
-         ) == 135
+  test "Day3 Part2 timing_distance" do
+    assert Day3.timing_distance(
+             "R75,D30,R83,U83,L12,D49,R71,U7,L72",
+             "U62,R66,U55,R34,D71,R55,D58,R83"
+           ) == 610
+
+    assert Day3.timing_distance(
+             "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51",
+             "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
+           ) == 410
+  end
 end

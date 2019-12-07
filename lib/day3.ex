@@ -1,6 +1,6 @@
 defmodule Day3 do
   defmodule Extent do
-    defstruct min_x: 0, min_y: 0, max_x: 0, max_y: 0
+    defstruct start_x: 0, start_y: 0, min_x: 0, min_y: 0, max_x: 0, max_y: 0
   end
 
   defmodule Point do
@@ -38,6 +38,8 @@ defmodule Day3 do
 
     {finish,
      %Extent{
+       start_x: start.x,
+       start_y: start.y,
        min_x: min(start.x, finish.x),
        min_y: min(start.y, finish.y),
        max_x: max(start.x, finish.x),
@@ -98,31 +100,110 @@ defmodule Day3 do
     segments(String.split(wire, ","), %Point{})
   end
 
-  defp min_non_zero_distance(p, acc) do
-    case p do
-      %Point{x: 0, y: 0} -> acc
-      _ -> min(abs(p.x) + abs(p.y), acc)
-    end
+  @spec paths_and_crossings(String.t(), String.t()) :: {path(), path(), [Day3.Point.t()]}
+  defp paths_and_crossings(wire_1, wire_2) do
+    path_1 = path(wire_1)
+    path_2 = path(wire_2)
+    {path_1, path_2, intersections(path_1, path_2)}
+  end
+
+  @spec closest([Day3.Point.t()], (Day3.Point.t() -> integer)) :: integer
+  defp closest(crossings, measure) do
+    Enum.reduce(crossings, @no_intersection, fn p, acc ->
+      case p do
+        %Point{x: 0, y: 0} -> acc
+        _ -> min(measure.(p), acc)
+      end
+    end)
   end
 
   @doc """
   Finds the crossings between two wires and calculates the minimal Manhattan Distance to one from the origin
   """
-  @spec distance(String.t(), String.t()) :: integer()
-  def distance(wire_1, wire_2) do
-    path_1 = path(wire_1)
-    path_2 = path(wire_2)
-    crossings = intersections(path_1, path_2)
-    Enum.reduce(crossings, @no_intersection, &min_non_zero_distance/2)
+  @spec manhattan_distance(String.t(), String.t()) :: integer
+  def manhattan_distance(wire_1, wire_2) do
+    {_, _, crossings} = paths_and_crossings(wire_1, wire_2)
+    closest(crossings, fn p -> abs(p.x) + abs(p.y) end)
   end
 
-  @spec part1(String.t()) :: integer()
-  def part1(file_name) do
-    [line1, line2] =
+  @spec is_vertical(Day3.Extent.t()) :: boolean
+  defp is_vertical(extent), do: extent.min_x == extent.max_x
+
+  @spec is_on(Day3.Point.t(), Day3.Extent.t()) :: boolean
+  defp is_on(point, extent) do
+    if is_vertical(extent) do
+      point.x == extent.min_x and point.y >= extent.min_y and point.y <= extent.max_y
+    else
+      point.y == extent.min_y and point.x >= extent.min_x and point.x <= extent.max_x
+    end
+  end
+
+  @spec steps_to(Day3.Point.t(), Day3.Extent.t()) :: integer
+  defp steps_to(point, extent) do
+    if is_vertical(extent) do
+      abs(point.y - extent.start_y)
+    else
+      abs(point.x - extent.start_x)
+    end
+  end
+
+  @spec length_of(Day3.Extent.t()) :: integer
+  defp length_of(extent) do
+    if is_vertical(extent) do
+      abs(extent.max_y - extent.min_y)
+    else
+      abs(extent.max_x - extent.min_x)
+    end
+  end
+
+  @spec distance_along(Day3.Point.t(), [Day3.Extent.t()]) :: integer
+  defp distance_along(point, path) do
+    case path do
+      [] ->
+        @no_intersection
+
+      [first_extent | rest] ->
+        cond do
+          is_on(point, first_extent) -> steps_to(point, first_extent)
+          true -> length_of(first_extent) + distance_along(point, rest)
+        end
+    end
+  end
+
+  @doc """
+  Finds the crossings between two wires and calculates the minimal path distance
+  along each wire to a crossing
+  """
+  @spec timing_distance(String.t(), String.t()) :: integer()
+  def timing_distance(wire_1, wire_2) do
+    {path_1, path_2, crossings} = paths_and_crossings(wire_1, wire_2)
+
+    timing_measure = fn p ->
+      distance_along(p, path_1) + distance_along(p, path_2)
+    end
+
+    closest(crossings, timing_measure)
+  end
+
+  @spec read_lines(String.t()) :: {String.t(), String.t()}
+  defp read_lines(file_name) do
+    [line_1, line_2] =
       File.read!(file_name)
       |> String.trim()
       |> String.split("\n")
 
-    distance(line1, line2)
+    {line_1, line_2}
+  end
+
+  @spec part1(String.t()) :: integer()
+  def part1(file_name) do
+    {line_1, line_2} = read_lines(file_name)
+    manhattan_distance(line_1, line_2)
+  end
+
+  @spec part2(String.t()) :: integer()
+  def part2(file_name) do
+    {line_1, line_2} = read_lines(file_name)
+    timing_distance(line_1, line_2)
   end
 end
