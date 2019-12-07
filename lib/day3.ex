@@ -23,7 +23,7 @@ defmodule Day3 do
     end
   end
 
-  @spec segment(Day3.Point.t(), any) :: {Day3.Point.t(), Day3.Extent.t()}
+  @spec segment(Day3.Point.t(), String.t()) :: {Day3.Point.t(), Day3.Extent.t()}
   def segment(start, seg) do
     [dir | num] = to_charlist(seg)
     count = String.to_integer(to_string(num))

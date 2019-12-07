@@ -59,11 +59,13 @@ defmodule Day2 do
     noun * 100 + verb
   end
 
+  @spec part1(String.t()) :: integer()
   def part1(file) do
     load_program(file)
     |> execute(12, 2)
   end
 
+  @spec part2(String.t()) :: integer()
   def part2(file) do
     load_program(file)
     |> find_noun_and_verb(19_690_720)
