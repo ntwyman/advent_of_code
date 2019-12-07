@@ -1,5 +1,4 @@
 defmodule Day2Test do
-  alias Day2
   use ExUnit.Case
   doctest Day2
 
