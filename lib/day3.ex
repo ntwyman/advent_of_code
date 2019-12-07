@@ -7,6 +7,9 @@ defmodule Day3 do
     defstruct x: 0, y: 0
   end
 
+  @no_intersection 9_999_999_999_999_999
+  @type path() :: [Extent.t()]
+
   @spec points_in(Day3.Extent.t()) :: [Day3.Point.t()]
   defp points_in(extent) do
     if extent.max_x > extent.min_x do
@@ -54,10 +57,10 @@ defmodule Day3 do
     end
   end
 
-  @spec intersects(Extent.t(), Extent.t()) :: [Point.t()]
-  def intersects(extent1, extent2) do
+  @spec crossings(Extent.t(), Extent.t()) :: [Point.t()]
+  def crossings(extent1, extent2) do
     if extent1.min_x <= extent2.max_x && extent2.min_x <= extent1.max_x &&
-         extent1.min_y <= extent2.max_y && extent2.min_y <= extent2.max_y do
+         extent1.min_y <= extent2.max_y && extent2.min_y <= extent1.max_y do
       overlap = %Extent{
         min_x: max(extent1.min_x, extent2.min_x),
         min_y: max(extent1.min_y, extent2.min_y),
@@ -71,11 +74,55 @@ defmodule Day3 do
     end
   end
 
-  @spec path([String.t()]) :: [Day3.Extent.t()]
-  def path(wire) do
-    segments(wire, {0, 0})
+  @doc """
+  List of points where a particular extent intersects the path
+  """
+  @spec intersects(Day3.Extent.t(), path()) :: [Point.t()]
+  def intersects(ext, path) do
+    List.flatten(for ext2 <- path, do: crossings(ext, ext2))
   end
 
-  def distance(_wire1, _wire2) do
+  @doc """
+  List of points where one path intersects annother
+  """
+  @spec intersections(path(), path()) :: [Point.t()]
+  def intersections(path_1, path_2) do
+    List.flatten(for ext1 <- path_1, do: intersects(ext1, path_2))
+  end
+
+  @doc """
+  Turns a wire definiton, e.g. ["R5", "U13", "L10"] into a path (list of extents)
+  """
+  @spec path(String.t()) :: path()
+  def path(wire) do
+    segments(String.split(wire, ","), %Point{})
+  end
+
+  defp min_non_zero_distance(p, acc) do
+    case p do
+      %Point{x: 0, y: 0} -> acc
+      _ -> min(abs(p.x) + abs(p.y), acc)
+    end
+  end
+
+  @doc """
+  Finds the crossings between two wires and calculates the minimal Manhattan Distance to one from the origin
+  """
+  @spec distance(String.t(), String.t()) :: integer()
+  def distance(wire_1, wire_2) do
+    path_1 = path(wire_1)
+    path_2 = path(wire_2)
+    crossings = intersections(path_1, path_2)
+    Enum.reduce(crossings, @no_intersection, &min_non_zero_distance/2)
+  end
+
+  @spec part1(String.t()) :: integer()
+  def part1(file_name) do
+    [line1, line2] =
+      File.read!(file_name)
+      |> String.trim()
+      |> String.split("\n")
+
+    distance(line1, line2)
   end
 end
