@@ -75,16 +75,22 @@ defmodule Day7Test do
              [4, 3, 2, 1, 0]
            ) == 43210
 
+    assert Day7.tune_amplifiers(@example_1) == 43210
+
     assert Day7.run_amplifiers(
              @example_2,
              0,
              [0, 1, 2, 3, 4]
            ) == 54321
 
+    assert Day7.tune_amplifiers(@example_2) == 54321
+
     assert Day7.run_amplifiers(
              @example_3,
              0,
              [1, 0, 4, 3, 2]
            ) == 65210
+
+    assert Day7.tune_amplifiers(@example_3) == 65210
   end
 end

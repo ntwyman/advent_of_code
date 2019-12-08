@@ -17,11 +17,16 @@ defmodule Day7 do
     end
   end
 
+  @spec permutations([Integer]) :: [[Integer]]
+  def permutations(values) when values == [], do: [[]]
+
+  def permutations(values) do
+    for v <- values, rest <- permutations(values -- [v]), do: [v | rest]
+  end
+
   @spec tune_amplifiers([integer]) :: integer
   def tune_amplifiers(program) do
-    phases =
-      for n <- 0..3124,
-          do: [div(n, 625), rem(div(n, 125), 5), rem(div(n, 25), 5), rem(div(n, 5), 5), rem(n, 5)]
+    phases = permutations(Enum.to_list(0..4))
 
     Enum.reduce(phases, 0, fn phase_list, acc ->
       thrust = run_amplifiers(program, 0, phase_list)
