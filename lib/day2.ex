@@ -1,19 +1,4 @@
 defmodule Day2 do
-  defp do_op(state, index, op) do
-    arg1 = :array.get(:array.get(index + 1, state), state)
-    arg2 = :array.get(:array.get(index + 2, state), state)
-    res_pos = :array.get(index + 3, state)
-    :array.set(res_pos, op.(arg1, arg2), state)
-  end
-
-  defp run_from(state, index) do
-    case :array.get(index, state) do
-      1 -> run_from(do_op(state, index, &Kernel.+/2), index + 4)
-      2 -> run_from(do_op(state, index, &Kernel.*/2), index + 4)
-      99 -> state
-    end
-  end
-
   defp load_program(file) do
     File.read!(file)
     |> String.trim()
@@ -21,10 +6,9 @@ defmodule Day2 do
     |> Enum.map(&String.to_integer/1)
   end
 
-  def run(state) do
-    :array.from_list(state)
-    |> run_from(0)
-    |> :array.to_list()
+  @spec run([integer]) :: [integer]
+  def run(program) do
+    IntComp.mem_dump(IntComp.run(program))
   end
 
   defp execute([op1, _addr1, _addr2 | rest], noun, verb) do
