@@ -53,6 +53,15 @@ defmodule IntComp do
     %{state | output: [value | state.output], ip: state.ip + 2}
   end
 
+  @spec jump_if(CompState.t(), atom, atom, (integer -> boolean)) :: CompState.t()
+  defp jump_if(state, mode_1, mode_2, predicate) do
+    if predicate.(fetch(state, state.ip + 1, mode_1)) do
+      %{state | ip: fetch(state, state.ip + 2, mode_2)}
+    else
+      %{state | ip: state.ip + 3}
+    end
+  end
+
   @spec continue(CompState.t()) :: CompState.t()
   defp continue(state) do
     instr = fetch(state, state.ip)
@@ -67,6 +76,10 @@ defmodule IntComp do
         2 -> binop(state, mode_1, mode_2, mode_3, &Kernel.*/2)
         3 -> input(state, mode_1)
         4 -> output(state, mode_1)
+        5 -> jump_if(state, mode_1, mode_2, fn val -> val != 0 end)
+        6 -> jump_if(state, mode_1, mode_2, fn val -> val == 0 end)
+        7 -> binop(state, mode_1, mode_2, mode_3, fn a, b -> if a < b, do: 1, else: 0 end)
+        8 -> binop(state, mode_1, mode_2, mode_3, fn a, b -> if a == b, do: 1, else: 0 end)
         99 -> %{state | halted: true}
       end
 
@@ -78,18 +91,13 @@ defmodule IntComp do
     continue(%CompState{tape: :array.from_list(program)})
   end
 
-  @spec run([integer], [integer]) :: CompState.t()
+  @spec run([integer], [integer]) :: [integer]
   def run(program, input) do
-    continue(%CompState{tape: :array.from_list(program), input: input})
+    continue(%CompState{tape: :array.from_list(program), input: input}).output
   end
 
   @spec mem_dump(CompState.t()) :: [integer]
   def mem_dump(state) do
     :array.to_list(state.tape)
-  end
-
-  @spec get_output(CompState.t()) :: [integer]
-  def get_output(state) do
-    state.output
   end
 end
