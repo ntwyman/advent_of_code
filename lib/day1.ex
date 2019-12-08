@@ -11,9 +11,7 @@ defmodule Day1 do
   end
 
   defp process(file_name, calculator) do
-    File.open!(file_name)
-    |> IO.stream(:line)
-    |> Enum.map(&String.trim/1)
+    Files.read_lines!(file_name)
     |> Enum.map(&String.to_integer/1)
     |> Enum.map(calculator)
     |> Enum.reduce(0, fn a, b -> a + b end)
