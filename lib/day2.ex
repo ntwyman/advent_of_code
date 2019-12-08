@@ -1,11 +1,4 @@
 defmodule Day2 do
-  defp load_program(file) do
-    File.read!(file)
-    |> String.trim()
-    |> String.split(",")
-    |> Enum.map(&String.to_integer/1)
-  end
-
   @spec run([integer]) :: [integer]
   def run(program) do
     IntComp.mem_dump(IntComp.run(program))
@@ -45,13 +38,13 @@ defmodule Day2 do
 
   @spec part1(String.t()) :: integer()
   def part1(file) do
-    load_program(file)
+    Files.read_integers!(file)
     |> execute(12, 2)
   end
 
   @spec part2(String.t()) :: integer()
   def part2(file) do
-    load_program(file)
+    Files.read_integers!(file)
     |> find_noun_and_verb(19_690_720)
   end
 end
