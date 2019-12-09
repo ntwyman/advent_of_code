@@ -1,37 +1,62 @@
 defmodule IntComp do
   defmodule CompState do
-    defstruct tape: [99], ip: 0, input: [], output: [], halted: false
+    defstruct tape: [99], ip: 0, input: [], output: [], rel_base: 0, halted: false
+  end
+
+  # NOTE: Can't work out how to typespec :array.array(integer)
+  @spec load_tape([integer]) :: any()
+  def load_tape(program) do
+    :array.from_list(program, 0)
   end
 
   @spec fetch(CompState.t(), integer) :: integer
   defp fetch(state, addr) do
-    :array.get(addr, state.tape)
+    val = :array.get(addr, state.tape)
+    # IO.puts("Load addr:#{addr}, val: #{val}")
+    val
   end
 
   @spec fetch(CompState.t(), integer, atom) :: integer
   defp fetch(state, addr, mode) do
     val = fetch(state, addr)
-    if mode == :immediate, do: val, else: fetch(state, val)
+    # IO.puts("Fetch from: #{addr} val: #{val} mode: #{mode} base: #{state.rel_base}")
+
+    case mode do
+      :immediate -> val
+      :position -> fetch(state, val)
+      :relative -> fetch(state, val + state.rel_base)
+    end
   end
 
   @spec set_val(CompState.t(), integer, integer) :: CompState.t()
   defp set_val(state, addr, value) do
+    # IO.puts("Set addr:#{addr} val:#{value}")
     %{state | tape: :array.set(addr, value, state.tape)}
   end
 
   @spec set_val(CompState.t(), integer, integer, atom) :: CompState.t()
   defp set_val(state, addr, value, mode) do
-    if mode == :position do
-      pos = fetch(state, addr)
-      set_val(state, pos, value)
-    else
-      set_val(state, addr, value)
+    case mode do
+      :immediate ->
+        set_val(state, addr, value)
+
+      :position ->
+        pos = fetch(state, addr)
+        set_val(state, pos, value)
+
+      :relative ->
+        pos = fetch(state, addr)
+        set_val(state, pos + state.rel_base, value)
     end
   end
 
   @spec mode_from_instr(integer, integer) :: atom
   defp mode_from_instr(instr, multiplier) do
-    if rem(div(instr, multiplier), 10) == 0, do: :position, else: :immediate
+    case rem(div(instr, multiplier), 10) do
+      0 -> :position
+      1 -> :immediate
+      2 -> :relative
+    end
   end
 
   @spec binop(CompState.t(), atom, atom, atom, (integer, integer -> integer)) :: CompState.t()
@@ -62,6 +87,7 @@ defmodule IntComp do
   @spec input(CompState.t(), atom) :: CompState.t()
   defp input(state, mode) do
     {value, input} = get_input(state)
+
     %{set_val(state, state.ip + 1, value, mode) | input: input, ip: state.ip + 2}
   end
 
@@ -91,6 +117,27 @@ defmodule IntComp do
     end
   end
 
+  @spec adj_base(CompState.t(), atom) :: CompState.t()
+  defp adj_base(state, mode) do
+    delta = fetch(state, state.ip + 1, mode)
+    %{state | ip: state.ip + 2, rel_base: state.rel_base + delta}
+  end
+
+  # defp opcode_name(opcode) do
+  #   case opcode do
+  #     1 -> "ADD"
+  #     2 -> "MUL"
+  #     3 -> "INP"
+  #     4 -> "OUT"
+  #     5 -> "JNZ"
+  #     6 -> "JPZ"
+  #     7 -> "TLT"
+  #     8 -> "TEQ"
+  #     9 -> "BAS"
+  #     99 -> "HLT"
+  #   end
+  # end
+
   @spec continue(CompState.t()) :: CompState.t()
   defp continue(state) do
     instr = fetch(state, state.ip)
@@ -98,6 +145,12 @@ defmodule IntComp do
     mode_1 = mode_from_instr(instr, 100)
     mode_2 = mode_from_instr(instr, 1000)
     mode_3 = mode_from_instr(instr, 10000)
+
+    # IO.puts(
+    #   "IP: #{state.ip}, OpCode: #{opcode_name(opcode)}, Modes: {#{mode_1}, #{mode_2}, #{mode_3}}, Base: #{
+    #     state.rel_base
+    #   }"
+    # )
 
     next_state =
       case opcode do
@@ -109,6 +162,7 @@ defmodule IntComp do
         6 -> jump_if(state, mode_1, mode_2, fn val -> val == 0 end)
         7 -> binop(state, mode_1, mode_2, mode_3, fn a, b -> if a < b, do: 1, else: 0 end)
         8 -> binop(state, mode_1, mode_2, mode_3, fn a, b -> if a == b, do: 1, else: 0 end)
+        9 -> adj_base(state, mode_1)
         99 -> %{state | halted: true}
       end
 
@@ -117,12 +171,12 @@ defmodule IntComp do
 
   @spec run([integer]) :: CompState.t()
   def run(program) do
-    continue(%CompState{tape: :array.from_list(program)})
+    continue(%CompState{tape: load_tape(program)})
   end
 
   @spec run([integer], [integer]) :: [integer]
   def run(program, input) do
-    continue(%CompState{tape: :array.from_list(program), input: input}).output
+    continue(%CompState{tape: load_tape(program), input: input}).output
   end
 
   @spec mem_dump(CompState.t()) :: [integer]
@@ -149,7 +203,7 @@ defmodule IntComp do
   def run_as_process(program, initial_input, output_pid) do
     spawn(fn ->
       run_loop(%CompState{
-        tape: :array.from_list(program),
+        tape: load_tape(program),
         input: initial_input,
         output: output_pid
       })

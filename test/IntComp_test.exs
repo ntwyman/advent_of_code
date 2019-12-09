@@ -113,4 +113,23 @@ defmodule IntCompTest do
     assert_receive {:halted, true}
     Process.exit(comp, :kill)
   end
+
+  @narcissus [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]
+  test "IntComp relative base addressing" do
+    assert IntComp.run(@narcissus, []) == Enum.reverse(@narcissus)
+  end
+
+  @sweet_16 [1102, 34_915_192, 34_915_192, 7, 4, 7, 99, 0]
+  @piggy [104, 1_125_899_906_842_624, 99]
+  test "IntComp big numbers" do
+    [val] = IntComp.run(@sweet_16, [])
+    assert String.length(Integer.to_string(val)) == 16
+
+    assert IntComp.run(@piggy, []) == [1_125_899_906_842_624]
+  end
+
+  @boost_bug [109, 12, 203, -12, 4, 0, 99]
+  test "BOOST Bug" do
+    assert IntComp.run(@boost_bug, [23786]) == [23786]
+  end
 end
