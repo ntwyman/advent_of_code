@@ -41,16 +41,45 @@ defmodule IntComp do
     %{set_val(state, state.ip + 3, op.(arg_1, arg_2), mode_3) | ip: state.ip + 4}
   end
 
+  @spec get_input(CompState.t()) :: {integer, [integer]}
+  defp get_input(state) do
+    case state.input do
+      [i | rest] ->
+        {i, rest}
+
+      [] ->
+        receive do
+          {:value, value} ->
+            {value, []}
+
+          {:is_halted} ->
+            send(state.output, {:halted, false})
+            get_input(state)
+        end
+    end
+  end
+
   @spec input(CompState.t(), atom) :: CompState.t()
   defp input(state, mode) do
-    [inp | rest] = state.input
-    %{set_val(state, state.ip + 1, inp, mode) | input: rest, ip: state.ip + 2}
+    {value, input} = get_input(state)
+    %{set_val(state, state.ip + 1, value, mode) | input: input, ip: state.ip + 2}
   end
 
   @spec output(CompState.t(), atom) :: CompState.t()
   defp output(state, mode) do
     value = fetch(state, state.ip + 1, mode)
-    %{state | output: [value | state.output], ip: state.ip + 2}
+
+    new_output =
+      cond do
+        is_list(state.output) ->
+          [value | state.output]
+
+        is_pid(state.output) ->
+          send(state.output, {:value, value})
+          state.output
+      end
+
+    %{state | output: new_output, ip: state.ip + 2}
   end
 
   @spec jump_if(CompState.t(), atom, atom, (integer -> boolean)) :: CompState.t()
@@ -99,5 +128,31 @@ defmodule IntComp do
   @spec mem_dump(CompState.t()) :: [integer]
   def mem_dump(state) do
     :array.to_list(state.tape)
+  end
+
+  @spec run_loop(CompState.t()) :: nil
+  defp run_loop(state) do
+    receive do
+      {:run} ->
+        run_loop(continue(state))
+
+      {:value, value} ->
+        run_loop(%{state | input: state.input ++ [value]})
+
+      {:is_halted} ->
+        send(state.output, {:halted, state.halted})
+        run_loop(state)
+    end
+  end
+
+  @spec run_as_process([integer], [integer], pid()) :: pid()
+  def run_as_process(program, initial_input, output_pid) do
+    spawn(fn ->
+      run_loop(%CompState{
+        tape: :array.from_list(program),
+        input: initial_input,
+        output: output_pid
+      })
+    end)
   end
 end

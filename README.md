@@ -8,14 +8,14 @@ Some of us at [Truss](https://truss.works/team) are doing the Advent of Code puz
 
 To run the solution for a given day and part
 
-``` shell
-> mix run aoc.exs -d <day> -p <1 | 2>
+```shell
+> mix run cli.exs -d <day> -p <1 | 2>
 ```
 
 e.g.
 
-``` shell
-> mix run aoc.exs -d 3 -p 2
+```shell
+> mix run cli.exs -d 3 -p 2
 ```
 
 runs the solution for day3 part 2.
@@ -24,12 +24,12 @@ runs the solution for day3 part 2.
 
 To run all tests
 
-``` shell
+```shell
 > mix test
 ```
 
 or to run a particular day's tests, e.g.
 
-``` shell
+```shell
 > mix test test/day1_test.exs
 ```

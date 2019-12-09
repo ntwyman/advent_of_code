@@ -1,7 +1,6 @@
 defmodule Day7Test do
   use ExUnit.Case
   doctest Day7
-
   @example_1 [3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0]
   @example_2 [
     3,
@@ -92,5 +91,44 @@ defmodule Day7Test do
            ) == 65210
 
     assert Day7.tune_amplifiers(@example_3) == 65210
+  end
+
+  @example_4 [
+    3,
+    26,
+    1001,
+    26,
+    -4,
+    26,
+    3,
+    27,
+    1002,
+    27,
+    2,
+    27,
+    1,
+    27,
+    26,
+    27,
+    4,
+    27,
+    1001,
+    28,
+    -1,
+    28,
+    1005,
+    28,
+    6,
+    99,
+    0,
+    0,
+    5
+  ]
+  test "Day7 Part2" do
+    assert Day7.run_looped_amplifiers(@example_4, 0, [9, 8, 7, 6, 5]) == 139_629_729
+  end
+
+  test "Day7 Part2 tune" do
+    assert Day7.tune_amplifiers(@example_4, true) == 139_629_729
   end
 end

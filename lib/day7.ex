@@ -17,6 +17,45 @@ defmodule Day7 do
     end
   end
 
+  @spec wait_on_amps(map()) :: integer
+  defp wait_on_amps(state) do
+    receive do
+      {:value, value} ->
+        send(state[:send], {:value, value})
+        send(state[:wait], {:is_halted})
+        wait_on_amps(Map.put(state, :last_seen, value))
+
+      {:halted, is_stopped} ->
+        if is_stopped do
+          state[:last_seen]
+        else
+          wait_on_amps(state)
+        end
+    end
+  end
+
+  @spec run_looped_amplifiers([integer], integer, [0..4]) :: integer
+  def run_looped_amplifiers(program, input, phases) do
+    [phase_a, phase_b, phase_c, phase_d, phase_e] = phases
+    amp_e = IntComp.run_as_process(program, [phase_e], self())
+    amp_d = IntComp.run_as_process(program, [phase_d], amp_e)
+    amp_c = IntComp.run_as_process(program, [phase_c], amp_d)
+    amp_b = IntComp.run_as_process(program, [phase_b], amp_c)
+    amp_a = IntComp.run_as_process(program, [phase_a, input], amp_b)
+    send(amp_a, {:run})
+    send(amp_b, {:run})
+    send(amp_c, {:run})
+    send(amp_d, {:run})
+    send(amp_e, {:run})
+    output = wait_on_amps(%{send: amp_a, wait: amp_e})
+    Process.exit(amp_a, :kill)
+    Process.exit(amp_b, :kill)
+    Process.exit(amp_c, :kill)
+    Process.exit(amp_d, :kill)
+    Process.exit(amp_e, :kill)
+    output
+  end
+
   @spec permutations([Integer]) :: [[Integer]]
   def permutations(values) when values == [], do: [[]]
 
@@ -24,12 +63,18 @@ defmodule Day7 do
     for v <- values, rest <- permutations(values -- [v]), do: [v | rest]
   end
 
-  @spec tune_amplifiers([integer]) :: integer
-  def tune_amplifiers(program) do
-    phases = permutations(Enum.to_list(0..4))
+  @spec tune_amplifiers([integer], boolean) :: integer
+  def tune_amplifiers(program, looped \\ false) do
+    phases = permutations(Enum.to_list(if looped, do: 5..9, else: 0..4))
 
     Enum.reduce(phases, 0, fn phase_list, acc ->
-      thrust = run_amplifiers(program, 0, phase_list)
+      thrust =
+        if looped do
+          run_looped_amplifiers(program, 0, phase_list)
+        else
+          run_amplifiers(program, 0, phase_list)
+        end
+
       if thrust > acc, do: thrust, else: acc
     end)
   end
@@ -38,5 +83,11 @@ defmodule Day7 do
   def part1(file_name) do
     Files.read_integers!(file_name)
     |> tune_amplifiers()
+  end
+
+  @spec part2(String.t()) :: integer
+  def part2(file_name) do
+    Files.read_integers!(file_name)
+    |> tune_amplifiers(true)
   end
 end
