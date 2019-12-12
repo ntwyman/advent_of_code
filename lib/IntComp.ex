@@ -188,14 +188,21 @@ defmodule IntComp do
   defp run_loop(state) do
     receive do
       {:run} ->
+        # IO.puts("Running")
         run_loop(continue(state))
 
       {:value, value} ->
+        # IO.puts("Value")
         run_loop(%{state | input: state.input ++ [value]})
 
       {:is_halted} ->
+        # IO.puts("H")
         send(state.output, {:halted, state.halted})
         run_loop(state)
+
+      msg ->
+        IO.puts("UNEXPECETD MESSAGE")
+        IO.inspect(msg)
     end
   end
 
