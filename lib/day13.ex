@@ -4,28 +4,63 @@ defmodule Day13 do
   end
 
   defmodule Game do
-    defstruct pid: nil, screen: %{}, bat: nil, ball: nil, score: 0, send_input: true
+    defstruct pid: nil, screen: %{}, bat: nil, ball: nil, score: 0, send_input: true, joystick: 0
+  end
+
+  def draw_game(game) do
+    ext = Enum.reduce(Map.keys(game.screen), %Pos{}, fn tile, extent ->
+      %Pos{x: max(tile.x, extent.x), y: max(tile.y, extent.y)} end)
+
+    Enum.each(0..ext.y, fn line_y ->
+      chrs = Enum.map(0..ext.x, fn col_x ->
+        case Map.get(game.screen, %Pos{x: col_x, y: line_y}, 0) do
+          0 -> 0x20
+          1 -> ?W
+          2 -> 0x2580
+          3 -> 0x2581
+          4 -> 0x2b24
+        end
+
+      end)
+      IO.puts(to_string(chrs))
+    end)
   end
 
   def update_game(game, pos, tile) do
     ng =
       case tile do
         0 -> %{game | screen: Map.delete(game.screen, pos)}
-        # ignore walls. who cares
-        1 -> game
+        1 -> %{game | screen: Map.put(game.screen, pos, tile)}
         2 -> %{game | screen: Map.put(game.screen, pos, tile)}
-        3 -> %{game | screen: Map.put(game.screen, pos, tile), bat: pos}
-        4 -> %{game | screen: Map.put(game.screen, pos, tile), ball: pos}
+        3 ->
+          # IO.puts("bat #{pos.x}, #{pos.y}")
+          %{game | screen: Map.put(game.screen, pos, tile), bat: pos}
+        4 ->
+          # IO.puts("ball #{pos.x}, #{pos.y}")
+          # We are updaing the ball and have seen it before.
+          if game.send_input and not is_nil(game.ball) do
+            intersect = cond do
+              pos.y == 20 -> # Either about to die or touching the bat
+                pos.x # Ball is going back the way it came
+              pos.y > game.ball.y -> # Coming down
+                game.ball.x + div((pos.x - game.ball.x) * (game.bat.y - game.ball.y), pos.y - game.ball.y)
+              true -> # going up
+                pos.x + (pos.x - game.ball.x) # Ball is heading to
+            end
+            joystick = cond do
+              game.bat.x < intersect ->
+                1
+              game.bat.x > intersect ->
+                -1
+              true ->
+                0
+            end
+            send(game.pid, {:value, joystick})
+            %{game | screen: Map.put(game.screen, pos, tile), ball: pos, joystick: joystick}
+          else
+            %{game | screen: Map.put(game.screen, pos, tile), ball: pos}
+          end
       end
-
-    if game.send_input and not (is_nil(ng.bat) or is_nil(ng.ball)) do
-      cond do
-        ng.bat.x < ng.ball.x -> send(ng.pid, {:value, 1})
-        ng.bat.x > ng.ball.x -> send(ng.pid, {:value, -1})
-        true -> send(ng.pid, {:value, 0})
-      end
-    end
-
     ng
   end
 
@@ -39,7 +74,6 @@ defmodule Day13 do
                 case {x_pos, y_pos} do
                   {-1, 0} ->
                     run_game(%{game | score: value})
-
                   _ ->
                     pos = %Pos{x: x_pos, y: y_pos}
                     run_game(update_game(game, pos, value))
@@ -68,6 +102,7 @@ defmodule Day13 do
   def run_game(game_pid, send_input) do
     game = %Game{pid: game_pid, send_input: send_input}
     send(game.pid, {:run})
+    send(game.pid, {:value, 0})
     send(game.pid, {:is_halted})
     run_game(game)
   end

@@ -151,7 +151,6 @@ defmodule IntComp do
     #     state.rel_base
     #   }"
     # )
-
     next_state =
       case opcode do
         1 -> binop(state, mode_1, mode_2, mode_3, &Kernel.+/2)
@@ -163,7 +162,9 @@ defmodule IntComp do
         7 -> binop(state, mode_1, mode_2, mode_3, fn a, b -> if a < b, do: 1, else: 0 end)
         8 -> binop(state, mode_1, mode_2, mode_3, fn a, b -> if a == b, do: 1, else: 0 end)
         9 -> adj_base(state, mode_1)
-        99 -> %{state | halted: true}
+        99 ->
+          # if is_pid(state.output), do: send(state.output, {:halted, true})
+          %{state | halted: true}
       end
 
     if next_state.halted, do: next_state, else: continue(next_state)
