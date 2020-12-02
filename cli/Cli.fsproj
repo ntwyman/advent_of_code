@@ -6,7 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Program.fs" />
+    <Folder Include="examples\" />
+    <Folder Include="inputs\" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Compile Include="cli.fs" />
+    <None Include="examples\day1.txt" />
+  </ItemGroup>
 </Project>
