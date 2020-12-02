@@ -12,5 +12,6 @@
   <ItemGroup>
     <Compile Include="cli.fs" />
     <None Include="examples\day1.txt" />
+    <None Include="inputs\day1.txt" />
   </ItemGroup>
 </Project>
