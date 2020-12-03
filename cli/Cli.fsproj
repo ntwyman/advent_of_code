@@ -14,5 +14,6 @@
     <None Include="examples\day1.txt" />
     <None Include="examples\day2.txt" />
     <None Include="inputs\day1.txt" />
+    <None Include="inputs\day2.txt" />
   </ItemGroup>
 </Project>

@@ -59,15 +59,36 @@ let dayOneHandler part lines =
                 | Some(a, b, c) -> sprintf "Triple: %d, %d, %d -> %d" a b c (a * b * c)
                 | None -> "Day 1.2 failed to find triple"
 
+let countOccurences x = Seq.filter ((=) x) >> Seq.length
+
+
+let isValidPassword rule (line:string) =
+    let parts =  line.Split(" ") |> Seq.toArray
+    let minMax = parts.[0].Split('-') |> Seq.map int |> Seq.toArray
+    let arg1 = int minMax.[0]
+    let arg2 = int minMax.[1]
+    let atom = parts.[1].Chars(0)
+    let pwd = parts.[2]
+    match rule with
+        | One ->
+            let occurances = countOccurences atom pwd
+            occurances >= arg1 && occurances <= arg2
+        | Two ->
+            (pwd.Chars(arg1 - 1) = atom) <> (pwd.Chars(arg2 - 1) = atom )
+
+let dayTwoHandler part lines =
+     Seq.filter (isValidPassword part) lines |> Seq.length |> string
+             
 let getHandler =
     function | 1 -> dayOneHandler
-             | day -> invalidArg "day" (sprintf "Day %d is not implemented yet" day)
+             | 2 -> dayTwoHandler
+             | day -> (fun part _ -> (sprintf "Day %d part %A is not implemented yet" day part))
 
 [<EntryPoint>]  
 let main argv =
-    let day = 1
+    let day = 2
     let part = Two
-    let test = false
+    let test = true
 
     let handler = getHandler day
     let directory = if test then "examples" else "inputs"
