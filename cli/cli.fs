@@ -27,7 +27,6 @@ let rec findPair numbers sum =
                 | Some(pair) -> Some(first, pair)
 
 let rec find2020Triple numbers =
-
     if Array.length numbers < 3 then
         None
     else
@@ -42,19 +41,35 @@ let rec find2020Triple numbers =
                 | None -> find2020Triple rest
                 | Some(second, third) -> Some(first, second, third)
 
+type Part =
+    | One
+    | Two
+
+let dayOneHandler part lines =
+    let sortedNumbers = Seq.map int lines |> Seq.toArray |> Array.sort
+    match part with
+        | One ->
+            let pair = findPair sortedNumbers 2020
+            match pair with
+                | Some(a, b) -> sprintf "Pair: %d, %d -> %d" a b (a * b)
+                | None -> "Day 1.1 failed to find pair"
+        | Two ->
+            let triple = find2020Triple sortedNumbers
+            match triple with
+                | Some(a, b, c) -> sprintf "Triple: %d, %d, %d -> %d" a b c (a * b * c)
+                | None -> "Day 1.2 failed to find triple"
+
+let getHandler =
+    function | 1 -> dayOneHandler
+             | day -> invalidArg "day" (sprintf "Day %d is not implemented yet" day)
+
 [<EntryPoint>]  
 let main argv =
-    let lines = File.ReadAllLines(@"inputs/day1.txt")
-    let numbers = Seq.map int lines |> Seq.toArray
-    let orderedNumbers = Array.sort numbers
+    let day = 1
+    let part = Two
+    let test = false
 
-    let pair = findPair orderedNumbers 2020
-    match pair with
-        | Some(a, b) ->  printfn "Pair: %d, %d -> %d" a b (a * b)
-        | None -> printfn "No pair found"
-
-    let triple = find2020Triple orderedNumbers
-    match triple with
-        | Some(a, b, c) -> printfn "Triple: %d, %d, %d -> %d" a b c (a * b * c)
-        | None -> printfn "No triple found"
+    let handler = getHandler day
+    let directory = if test then "examples" else "inputs"
+    printfn "%s" (handler part (File.ReadAllLines(sprintf "%s/day%d.txt" directory day)))
     0 // return an integer exit code
