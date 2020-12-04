@@ -78,17 +78,35 @@ let isValidPassword rule (line:string) =
 
 let dayTwoHandler part lines =
      Seq.filter (isValidPassword part) lines |> Seq.length |> string
+
              
+let dayThreeHandler part lines =
+    // Split map into an array of arrays.
+    let hillTile = Seq.map Seq.toArray lines |> Seq.toArray
+    let tileWidth = hillTile.[0].Length
+    let height = hillTile.Length
+    let rec whee right down x y crashes =
+        let newY = y + down
+        if newY >= height then
+            crashes
+        else
+            let xPrime = x + right
+            let newX = if xPrime >= tileWidth then xPrime - tileWidth else xPrime
+            let newCrashes = if hillTile.[newY].[newX] = '#' then crashes + 1 else crashes
+            whee right down newX newY newCrashes
+    string (whee 3 1 0 0 0)
+
 let getHandler =
     function | 1 -> dayOneHandler
              | 2 -> dayTwoHandler
+             | 3 -> dayThreeHandler
              | day -> (fun part _ -> (sprintf "Day %d part %A is not implemented yet" day part))
 
 [<EntryPoint>]  
 let main argv =
-    let day = 2
-    let part = Two
-    let test = true
+    let day = 3
+    let part = One
+    let test = false
 
     let handler = getHandler day
     let directory = if test then "examples" else "inputs"
