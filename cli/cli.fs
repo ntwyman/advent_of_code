@@ -92,9 +92,18 @@ let dayThreeHandler part lines =
         else
             let xPrime = x + right
             let newX = if xPrime >= tileWidth then xPrime - tileWidth else xPrime
-            let newCrashes = if hillTile.[newY].[newX] = '#' then crashes + 1 else crashes
+            let newCrashes = if hillTile.[newY].[newX] = '#' then crashes + 1UL else crashes
             whee right down newX newY newCrashes
-    string (whee 3 1 0 0 0)
+    let doWhee right down = whee right down 0 0 0UL
+    match part with
+        | One -> doWhee 3 1 |> string
+        | Two ->
+            let oneOne = doWhee 1 1
+            let threeOne = doWhee 3 1
+            let fiveOne = doWhee 5 1
+            let sevenOne = doWhee 7 1
+            let oneTwo = doWhee 1 2
+            oneOne * threeOne * fiveOne * sevenOne * oneTwo |> string
 
 let getHandler =
     function | 1 -> dayOneHandler
@@ -105,7 +114,7 @@ let getHandler =
 [<EntryPoint>]  
 let main argv =
     let day = 3
-    let part = One
+    let part = Two
     let test = false
 
     let handler = getHandler day
