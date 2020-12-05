@@ -14,7 +14,7 @@ module Day4 =
         let m = Regex.Match(field, @"^\d{4}$")
         if m.Success then
             let v = int field
-            v >=min && v <= max
+            v >= min && v <= max
         else
             false
 
@@ -42,27 +42,25 @@ module Day4 =
     let checkPassportId id =
         Regex.Match(id, @"^[0-9]{9}$").Success
 
-    let hasAllFields pass =
-        List.forall ( fun k -> Map.containsKey k pass) [ "byr"; "iyr"; "eyr"; "hgt"; "hcl"; "ecl"; "pid";]
-
-    let isValidPassport (pass: Passport) =
-        let checkField name fieldValidator passport =
-            pass.ContainsKey(name) && fieldValidator pass.[name]
-        let checkByr = checkField "byr" (checkYear 1920 2002)
-        let checkIyr = checkField "iyr" (checkYear 2010 2020)
-        let checkEyr  = checkField "eyr" (checkYear 2020 2030)
-        let checkHgt = checkField "hgt" checkHeight
-        let checkHcl = checkField "hcl" checkHairColor
-        let checkEcl = checkField "ecl" checkEyeColor
-        let checkPid = checkField "pid" checkPassportId
-        checkByr pass && 
-            checkIyr pass && 
-            checkEyr pass &&
-            checkHgt pass &&
-            checkHcl pass && 
-            checkEcl pass && 
-            checkPid pass
-
+    let isValidPassport part (pass:Passport) =
+        let checkField name =
+            if pass.ContainsKey(name) then
+                if part = Two then
+                    let field = pass.[name]
+                    match name with
+                         | "byr" -> checkYear 1920 2002 field
+                         | "iyr" -> checkYear 2010 2020 field
+                         | "eyr" -> checkYear 2020 2030 field
+                         | "hgt" -> checkHeight field
+                         | "hcl" -> checkHairColor field
+                         | "ecl" -> checkEyeColor field
+                         | "pid" -> checkPassportId field
+                         | _ -> false
+                else
+                    true
+            else
+                false
+        List.forall checkField [ "byr"; "iyr"; "eyr"; "hgt"; "hcl"; "ecl"; "pid";]
 
     let handler part (lines: string seq) =
         let mapLine (line:string)  = if line.Trim() = "" then [| None |] else Array.map Some (line.Split(' '))
@@ -77,10 +75,6 @@ module Day4 =
         let passportsAcc = Seq.fold passportFolder {Passports = []; Current= Map.empty;} entries
         let passports = passportsAcc.Current :: passportsAcc.Passports
 
-        let validator =
-            if part = One then
-                hasAllFields
-            else
-                isValidPassport
-        List.filter validator passports |> List.length |> string
+
+        List.filter (isValidPassport part) passports |> List.length |> string
 
