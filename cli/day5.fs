@@ -1,11 +1,7 @@
 ﻿namespace AoC
 
-open System.Text.RegularExpressions
-
 module Day5 =
-
     let rec shiftBits (str:string) hiBit bits =
-        
         if String.length str = 0 then
             bits
         else
@@ -19,7 +15,6 @@ module Day5 =
         let row = binShift boardingPass.[0..6] 'B'
         let seat = binShift boardingPass.[7..] 'R'
         (row * 8) + seat 
-
 
     let rec findMiddleSeat seats =
         match seats with
