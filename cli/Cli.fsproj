@@ -18,6 +18,8 @@
     <None Include="inputs\day8.txt" />
     <None Include="inputs\day9.txt" />
     <None Include="inputs\day10.txt" />
+    <None Include="inputs\day11.txt" />
+    <None Include="inputs\day12.txt" />
     <Compile Include="types.fs" />
     <Compile Include="day1.fs" />
     <Compile Include="day2.fs" />
@@ -29,6 +31,8 @@
     <Compile Include="day8.fs" />
     <Compile Include="day9.fs" />
     <Compile Include="day10.fs" />
+    <Compile Include="day11.fs" />
+    <Compile Include="day12.fs" />
     <Compile Include="cli.fs" />
     <None Include="examples\day1.txt" />
     <None Include="examples\day2.txt" />
@@ -40,6 +44,8 @@
     <None Include="examples\day8.txt" />
     <None Include="examples\day9.txt" />
     <None Include="examples\day10.txt" />
+    <None Include="examples\day11.txt" />
+    <None Include="examples\day12.txt" />
     <PackageReference Include="NUnit" Version="3.12.0">
       <GeneratePathProperty></GeneratePathProperty>
     </PackageReference>
