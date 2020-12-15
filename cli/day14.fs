@@ -9,7 +9,7 @@ module Day14 =
     //      while an X leaves the bit in the value unchanged.
     let rec shiftBits (keepMask:uint64) (replaceMask:uint64) remainder =
         if String.length remainder = 0 then
-            printfn "Keep Mask %d, replace mask %d" keepMask replaceMask
+            printfn "XMask %d, ReplaceMask %d" keepMask replaceMask
             keepMask, replaceMask
         else
             let flag = remainder.[0]
@@ -19,7 +19,7 @@ module Day14 =
                                         | _ -> (1UL, 0UL)
             shiftBits ((keepMask <<< 1) ||| keepBit) ((replaceMask <<< 1) ||| replaceBit) nextRemainder
 
-    let processLine ((keepMask:uint64, replaceMask), (memory:Map<string, uint64>)) (line:string) =
+    let valueFolder ((keepMask:uint64, replaceMask:uint64), memory:Map<string, uint64>) (line:string) =
         let parts = line.Split(" = ")
         if parts.[0] = "mask" then
             (shiftBits 0UL 0UL parts.[1], memory)
@@ -29,7 +29,41 @@ module Day14 =
             printfn "Setting %s to %d" addr value
             ((keepMask, replaceMask), memory.Add(addr, value))
 
+    
+    let bitsToOffsets (bits:uint64) =
+        let rec bitValues (mask:uint64) (offsets: uint64 list) =
+            if mask > bits then
+                offsets
+            else
+                if (bits &&& mask) <> 0UL then
+                    bitValues (mask <<< 1) (List.map (fun offset -> offset||| mask) offsets |> List.append offsets)
+                else
+                    bitValues (mask <<< 1) offsets
+        bitValues 1UL [0UL;]
+
+    let memFolder (setMask:uint64, clearMask:uint64,  offsets:uint64 list, memory: Map<uint64, uint64>) (line:string) = 
+        let parts = line.Split(" = ")
+        if parts.[0] = "mask" then
+            let toggleBits, setBits = shiftBits 0UL 0UL parts.[1]
+            (setBits, ~~~ toggleBits, bitsToOffsets toggleBits, memory)
+        else
+            let value = uint64 parts.[1]
+            let memStr = parts.[0]
+            let baseAddr = (setMask ||| uint64 memStr.[4..(memStr.Length - 2)]) &&& clearMask
+            printfn "Base Addr: %d, Value %d, Times %d" baseAddr value offsets.Length
+            let newMem = List.fold (fun (mem:Map<uint64, uint64>) (offset: uint64) -> mem.Add(baseAddr + offset, value)) memory offsets
+            (setMask, clearMask, offsets, newMem)
+
+    let addValues<'K when 'K : comparison> (m:Map<'K, uint64>) =
+        Map.fold (fun total _ value -> total + value) 0UL m
+
     let handler part (entries: string seq) =
-        let _, memory = Seq.fold processLine ((0xffffffffffffffffUL, 0UL), Map.empty) entries
-        let total = Map.fold (fun total _ value -> total + value) 0UL memory
+
+        let total = match part with
+                        | One ->
+                            let (_, m1) = Seq.fold valueFolder ((0xffffffffffffffffUL, 0UL), Map.empty) entries
+                            addValues m1
+                        | _ ->
+                            let (_, _, _, m2) = Seq.fold memFolder (0UL, 0xffffffffffffffffUL, [0UL;], Map.empty) entries
+                            addValues m2
         string total
