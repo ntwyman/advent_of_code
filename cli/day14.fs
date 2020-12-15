@@ -9,7 +9,6 @@ module Day14 =
     //      while an X leaves the bit in the value unchanged.
     let rec shiftBits (keepMask:uint64) (replaceMask:uint64) remainder =
         if String.length remainder = 0 then
-            printfn "XMask %d, ReplaceMask %d" keepMask replaceMask
             keepMask, replaceMask
         else
             let flag = remainder.[0]
@@ -26,7 +25,6 @@ module Day14 =
         else
             let value = (keepMask &&& uint64 parts.[1]) ||| replaceMask
             let addr = parts.[0]
-            printfn "Setting %s to %d" addr value
             ((keepMask, replaceMask), memory.Add(addr, value))
 
     
@@ -50,7 +48,6 @@ module Day14 =
             let value = uint64 parts.[1]
             let memStr = parts.[0]
             let baseAddr = (setMask ||| uint64 memStr.[4..(memStr.Length - 2)]) &&& clearMask
-            printfn "Base Addr: %d, Value %d, Times %d" baseAddr value offsets.Length
             let newMem = List.fold (fun (mem:Map<uint64, uint64>) (offset: uint64) -> mem.Add(baseAddr + offset, value)) memory offsets
             (setMask, clearMask, offsets, newMem)
 

@@ -1,4 +1,4 @@
-﻿namespace AoC
+namespace AoC
 open System.IO
 
 module Cli =
@@ -23,6 +23,7 @@ module Cli =
                 | 10 -> Day10.handler
                 | 11 -> Day11.handler
                 | 12 -> Day12.handler
+                | 13 -> Day13.handler
                 | 14 -> Day14.handler
                 | day -> (fun part _ -> (sprintf "Day %d part %A is not implemented yet" day part))
         let directory = if test then "examples" else "inputs"
