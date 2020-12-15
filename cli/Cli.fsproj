@@ -51,6 +51,7 @@
     <Compile Include="day12.fs" />
     <Compile Include="day13.fs" />
     <Compile Include="day14.fs" />
+    <Compile Include="day15.fs" />
     <Compile Include="cli.fs" />
     <PackageReference Include="NUnit" Version="3.12.0">
       <GeneratePathProperty></GeneratePathProperty>
