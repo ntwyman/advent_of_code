@@ -5,7 +5,7 @@ module Cli =
 
     [<EntryPoint>]  
     let main argv =
-        let day = 14
+        let day = 15
         let part = Two
         let test = false    
 
@@ -25,6 +25,7 @@ module Cli =
                 | 12 -> Day12.handler
                 | 13 -> Day13.handler
                 | 14 -> Day14.handler
+                | 15 -> Day15.handler
                 | day -> (fun part _ -> (sprintf "Day %d part %A is not implemented yet" day part))
         let directory = if test then "examples" else "inputs"
         printfn "%s" (handler part (File.ReadAllLines(sprintf "%s/day%d.txt" directory day)))
