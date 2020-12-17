@@ -8,7 +8,6 @@
     <Folder Include="inputs\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="examples\day15.txt" />
     <None Include="examples\day1.txt" />
     <None Include="examples\day2.txt" />
     <None Include="examples\day3.txt" />
@@ -23,7 +22,7 @@
     <None Include="examples\day12.txt" />
     <None Include="examples\day13.txt" />
     <None Include="examples\day14.txt" />
-    <None Include="examples\day14 %28copy%29.txt" />
+    <None Include="examples\day15.txt" />
     <None Include="inputs\day1.txt" />
     <None Include="inputs\day2.txt" />
     <None Include="inputs\day3.txt" />
