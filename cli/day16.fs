@@ -89,21 +89,20 @@ module Day16 =
         let vv = data.Fields.[fieldName]
         isInRange vv.Lower || isInRange vv.Upper
 
-    // At thi point we have a sequence pf the fields
-    // and for each field a list of the possible names.
-    // Each name can only appear once. So, if we have a singleton
-    // we know that's the right one and can remove it from other fields.
-    let rec reduceFieldNames (names:string seq seq) =
-        let accountedFor = Seq.filter (fun opt -> (1 = Seq.length opt)) names |> Seq.map Seq.head
-        if Seq.length accountedFor = Seq.length names then
-            accountedFor
+    // TODO - Work out why this is so rediculously slow.
+    let rec removeOptions fieldOptions =
+        printfn "Removing OPtions %d" (Seq.length fieldOptions)
+        if Seq.isEmpty fieldOptions then
+            []
         else
-            let removeAccountedFor (options: string seq) =
-                if 1 = Seq.length options then
-                   options
-                else
-                    Seq.filter (fun n -> Seq.contains n accountedFor |> not) options 
-            Seq.map removeAccountedFor names |> reduceFieldNames
+            let idx, names = Seq.head fieldOptions
+            let removeName (idx, opts) =
+                (idx, Seq.except names opts)
+            (idx, Seq.head names) :: removeOptions (Seq.map removeName (Seq.tail fieldOptions))
+
+    let reduceFieldNames (names:string seq seq) =
+        let nameOptions = Seq.indexed names |> Seq.sortBy (fun s -> snd s |> Seq.length)
+        removeOptions nameOptions |> Seq.sortBy fst |> Seq.map snd
 
     let handler part (entries:string seq) =
         let (_, data) = Seq.fold dataFolder (Fields , {Fields=Map.empty; MyTicket=[]; NearbyTickets=[];}) entries
@@ -126,9 +125,9 @@ module Day16 =
             let pareOptions (opt:string seq seq) (nearByTicket: int seq) =
                 Seq.zip nearByTicket opt |> Seq.map pareFieldOptions
             let possibleFieldNames = Seq.fold pareOptions options validNearBy
-            let fieldNames = reduceFieldNames possibleFieldNames
+            let fieldNames = possibleFieldNames |> reduceFieldNames
             let filterDeparturesFields ((name:string), _) =
                 name.StartsWith("departure")
             let depFields = Seq.zip fieldNames data.MyTicket |> Seq.filter filterDeparturesFields
-            depFields |> Seq.map snd |> Seq.reduce (*) |> string
+            depFields |> Seq.map snd |> Seq.map uint64 |> Seq.reduce (*) |> string
             
