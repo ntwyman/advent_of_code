@@ -1,9 +1,7 @@
 ﻿namespace AoC
 
 module Day15 =
-
-
- 
+     
     let handler part (entries:string seq) =
         let lastTurn = if part = One then 2019 else 29999999
         let whatComes2020th numbers =
