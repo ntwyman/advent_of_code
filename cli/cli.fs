@@ -5,8 +5,8 @@ module Cli =
 
     [<EntryPoint>]  
     let main argv =
-        let day = 16
-        let part = Two
+        let day = 17
+        let part = One
         let test = false    
 
         let handler : Handler =
