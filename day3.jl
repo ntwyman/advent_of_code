@@ -8,36 +8,68 @@ s=ArgParseSettings()
 end
 parsed_args = parse_args(ARGS, s)
 
-function part1(bits)
-    LENGTH = 12
-    counts = zeros(Int32, LENGTH)
-    lc = 0
-    for b in bits
-        for idx in 1:LENGTH
-            if b[idx] == "1"
+function calculate_gamma(numbers, bitlen)
+    counts = zeros(bitlen)
+    for n in numbers
+        for idx in 1:bitlen
+            mask = 0x1000 >>> idx
+            if (n & mask) != 0
                 counts[idx] += 1
             end
         end
-        lc += 1
     end
-    lc = div(lc, 2)
-    gamma::UInt16 = 0
-    for idx in 1:LENGTH
+    
+    l = div(length(numbers), 2)
+    gamma::UInt32 = 0
+    for idx in 1:bitlen
         gamma <<= 1
-        if counts[idx] > lc
+        if counts[idx] >= l
             gamma |= 1
         end
     end
-    epsilon = xor(0x0fff,gamma)
-    UInt32(epsilon) * UInt32(gamma)
+    gamma
 end
 
-function part2(bits)
-    "Not implemented yet"
+function part1(bits)
+    gamma = calculate_gamma(bits, 12)
+    epsilon = xor(gamma, 0x0fff)
+    epsilon * gamma
+end
+function count_bits(bitmask, values)
+    count = 0
+    for v in values
+        if (v & bitmask) != 0
+            count +=1
+        end
+    end
+    count
+end
+
+function filter_values(values, use_first)
+    bit = 0x0800
+    while bit != 0 && length(values) > 1
+        println(length(values))
+        set = count_bits(bit , values)
+        if use_first
+            good = set >= (length(values)- set) ? bit : 0
+        else
+            good = set < (length(values)-set) ? bit : 0
+        end
+        values = filter(b -> (b & bit) == good, values)
+        println(length(values))
+        bit >>>= 1
+    end
+    values[1]
+end
+
+function part2(values)
+    o2_rating = filter_values(values, true)
+    co2_rating = filter_values(values, false)
+    o2_rating * co2_rating
 end
 
 function parseLine(line)
-    split(line,"")
+    parse(UInt32, line, base=2)
 end
 
 bits = [parseLine(line) for line in eachline("input/day_3.txt")]
