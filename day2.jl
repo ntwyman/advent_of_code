@@ -24,21 +24,6 @@ function part1(moves)
     d * x
 end
 
-function part1(moves)
-    x = 0
-    d = 0
-    for (dir, amount) in moves
-        if dir == "forward"
-            x += amount
-        elseif  dir == "down"
-            d += amount
-        else
-            d -= amount
-        end
-    end
-    d * x
-end
-
 function part2(moves)
     x = 0
     d = 0
