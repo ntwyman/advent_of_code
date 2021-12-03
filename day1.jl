@@ -8,20 +8,15 @@ s=ArgParseSettings()
 end
 parsed_args = parse_args(ARGS, s)
 
-function lineAsInteger(f)
-    line = readline(f)
-    parse(Int64, line)
-end
 
-function part1(fileHandle)
-    lastSeen = lineAsInteger(fileHandle)
-    increases = 0
-    while ! eof(fileHandle)
-        next = lineAsInteger(fileHandle)
-        if next > lastSeen
-            increases += 1
+function part1(numbers)
+    lastSeen = typemax(Int64)
+    increases = 0 
+    for value in numbers
+        if value > lastSeen
+            increases +=1
         end
-        lastSeen = next
+        lastSeen = value
     end
     increases
 end
@@ -29,11 +24,11 @@ end
 function part2(fileHandle)
     "Not implemented yet... don't vaccinate and code"  
 end
-open("input/day_1.txt", "r") do dataFile
-    if parsed_args["part2"]
-        println(part2(dataFile))
-    else
-        println(part1(dataFile))
-    end
+
+numbers = [parse(Int64, line) for line in eachline("input/day_1.txt")]
+if parsed_args["part2"]
+    println(part2(numbers))
+else
+    println(part1(numbers))
 end
 
