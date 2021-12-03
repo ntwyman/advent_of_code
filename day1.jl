@@ -21,8 +21,14 @@ function part1(numbers)
     increases
 end
 
-function part2(fileHandle)
-    "Not implemented yet... don't vaccinate and code"  
+function part2(numbers)
+    increases = 0
+    for idx in 1:(Base.length(numbers)-3)
+        if sum(numbers[idx:idx+2]) < sum(numbers[idx+1:idx+3])
+            increases += 1
+        end
+    end
+    increases
 end
 
 numbers = [parse(Int64, line) for line in eachline("input/day_1.txt")]
