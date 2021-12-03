@@ -33,8 +33,8 @@ end
 
 numbers = [parse(Int64, line) for line in eachline("input/day_1.txt")]
 if parsed_args["part2"]
-    println(part2(numbers))
+    answer = part2(numbers)
 else
-    println(part1(numbers))
+    answer = part1(numbers)
 end
-
+println("The answer is: $answer")

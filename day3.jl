@@ -9,35 +9,11 @@ end
 parsed_args = parse_args(ARGS, s)
 
 function part1(moves)
-    d = 0
-    x = 0
-    for (dir, amount) in moves
-        if dir == "forward"
-            x += amount
-        elseif  dir == "down"
-            d += amount
-        else
-            d -= amount
-        end
-    end
-    d * x
+    "Not implemented yet"
 end
 
 function part2(moves)
-    x = 0
-    d = 0
-    aim = 0
-    for (dir, amount) in moves
-        if dir == "forward"
-            x += amount
-            d += aim * amount
-        elseif  dir == "down"
-            aim += amount
-        else
-            aim -= amount
-        end
-    end
-    d * x
+    "Not implemented yet"
 end
 
 function parseLine(line)
@@ -51,6 +27,4 @@ if parsed_args["part2"]
 else
     answer = part1(moves)
 end
-
 println("The answer is: $answer")
-
