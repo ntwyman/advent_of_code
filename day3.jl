@@ -41,7 +41,7 @@ function filter_values(values, use_first)
     while bit != 0 && length(values) > 1
         set = count(v -> (v & bit) != 0 , values)
         if use_first
-            good = set >= (length(values)- set) ? bit : 0
+            good = set >= (length(values) - set) ? bit : 0
         else
             good = set < (length(values)-set) ? bit : 0
         end
