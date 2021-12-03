@@ -35,28 +35,17 @@ function part1(bits)
     epsilon = xor(gamma, 0x0fff)
     epsilon * gamma
 end
-function count_bits(bitmask, values)
-    count = 0
-    for v in values
-        if (v & bitmask) != 0
-            count +=1
-        end
-    end
-    count
-end
 
 function filter_values(values, use_first)
     bit = 0x0800
     while bit != 0 && length(values) > 1
-        println(length(values))
-        set = count_bits(bit , values)
+        set = count(v -> (v & bit) != 0 , values)
         if use_first
             good = set >= (length(values)- set) ? bit : 0
         else
             good = set < (length(values)-set) ? bit : 0
         end
         values = filter(b -> (b & bit) == good, values)
-        println(length(values))
         bit >>>= 1
     end
     values[1]
