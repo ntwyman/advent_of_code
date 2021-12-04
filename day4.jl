@@ -12,7 +12,6 @@ end
 parsed_args = parse_args(ARGS, s)
 
 mutable struct Board
-    number
     squares::Dict
     columns::Array
     rows::Array
@@ -22,8 +21,8 @@ end
 function mark_board(board, num)
     if !board.done && haskey(board.squares, num) 
         (row, col) = pop!(board.squares, num)
-        board.rows[row] += 1
-        board.columns[col] += 1
+        board.rows[row] += 1 # Crossed off one more number in this row
+        board.columns[col] += 1 # Likewise colum
         board.done = (board.rows[row] == 5 || board.columns[col]==5)
         return board.done
     end
@@ -66,7 +65,7 @@ for boardIdx in 2:6:length(lines)-1
             push!(squares, (val,(row, col)))
         end
     end
-    push!(boards,Board(boardIdx, Dict(squares), zeros(5), zeros(5), false))
+    push!(boards,Board(Dict(squares), zeros(5), zeros(5), false))
 end
 if parsed_args["part2"]
     (last, the_one) = find_loser(numbers, boards)
