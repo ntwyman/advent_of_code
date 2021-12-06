@@ -11,26 +11,8 @@ s=ArgParseSettings()
 end
 parsed_args = parse_args(ARGS, s)
 
-function grow!(fish)
-    newfish = 0
-    for (i, f) in enumerate(fish)
-        f -= 1
-        if f < 0
-            newfish += 1
-            f = 6
-        end
-        fish[i] = f
-    end
-    for _ in 1:newfish
-        push!(fish, 8)
-    end
-end
-
-function part1(fish)
-    for _ in 1:80
-        grow!(fish)
-    end
-    length(fish)
+function parseLine(line)
+    parse(Int32, line)
 end
 
 function growcounts!(counts)
@@ -42,27 +24,17 @@ function growcounts!(counts)
     counts[9] = n
 end
 
-function part2(fish)
-    counts = zeros(UInt64, 9)
-    for f in fish
-        counts[f+1]+=1
-    end
-    for _ in 1:256
-        growcounts!(counts)
-    end
-    sum(counts)
-end
-
-function parseLine(line)
-    parse(Int32, line)
-end
-
 test_suffix = parsed_args["test"] ? "_test" : ""
 lines = readlines("input/day_6$test_suffix.txt")
 fish = [parse(Int8, f) for f in split(lines[1], ",")]
-if parsed_args["part2"]
-    answer = part2(fish)
-else
-    answer = part1(fish)
+census = zeros(UInt64, 9)
+function countfish(age)
+    ageindex = age + 1
+    census[ageindex] += 1
 end
+foreach(countfish, fish)
+for _ in 1:(parsed_args["part2"] ? 256 : 80)
+    growcounts!(census)
+end
+answer = sum(census)
 println("The answer is: $answer")
