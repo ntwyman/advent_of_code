@@ -11,10 +11,16 @@ s=ArgParseSettings()
 end
 parsed_args = parse_args(ARGS, s)
 
-function findcost(data, aim)
-    sum([abs(c - aim) for c in data])
+function costtomove(n)
+    parsed_args["part2"] ? div(n * (n + 1), 2) : n
 end
-function part1(data)
+
+function findcost(data, aim)
+
+    sum([costtomove(abs(c - aim)) for c in data])
+end
+
+function findminimum(data)
     total = sum(data)
     attempt = div(total, length(data))
     costplus = findcost(data, attempt + 1)
@@ -36,20 +42,10 @@ function part1(data)
             costminus = findcost(data, attempt  + 1)
         end
     end
-
-    println("$costminus, $cost, $costplus")
-    attempt
 end
 
-function part2(data)
-    "Part2: Not Implemented"
-end
 test_suffix = parsed_args["test"] ? "_test" : ""
 lines = readlines("input/day_7$test_suffix.txt")
 data = [parse(Int32, crab) for crab in split(lines[1],",")]
-if parsed_args["part2"]
-    answer = part2(data)
-else
-    answer = part1(data)
-end
+answer = findminimum(data)
 println("The answer is: $answer")
