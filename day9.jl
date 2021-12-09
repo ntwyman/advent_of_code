@@ -13,7 +13,7 @@ parsed_args = parse_args(ARGS, s)
 
 
 function parseLine(l)
-    parts = [parse(UInt8, d) for d in l]
+    [parse(UInt8, d) for d in l]
 end
 
 test_suffix = parsed_args["test"] ? "_test" : ""
