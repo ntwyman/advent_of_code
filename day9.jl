@@ -42,7 +42,7 @@ function part1()
 end
 
 
-function basinsize(sinkx, sinky)
+function basinsize(sink)
     basin = Set()
     function addtobasin(x, y)
         if (x, y) ∉ basin && getValue(x, y) < 9
@@ -53,12 +53,12 @@ function basinsize(sinkx, sinky)
             addtobasin(x, y + 1)
         end
     end
-    addtobasin(sinkx, sinky)
+    addtobasin(sink.x, sink.y)
     length(basin)
 end
 
 function part2()
-    sizes = sort(map(s -> basinsize(s.x, s.y), sinks))
+    sizes = sort(map(basinsize, sinks))
     s1 = pop!(sizes)
     s2 = pop!(sizes)
     s3 = pop!(sizes)
