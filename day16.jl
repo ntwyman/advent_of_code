@@ -127,9 +127,7 @@ end
 function add_versions(packet)
     v::UInt32 = packet.version
     if packet.type != 4
-        for sp in packet.value
-            v += add_versions(sp)
-        end
+        v += sum([add_versions(p) for p in packet.value])
     end
     v
 end
@@ -143,9 +141,7 @@ function dump_packets(p)
         if p.type == 4
             println("$(new_ident)Value: $(p.value)")
         else
-            for ps in p.value
-                v += do_dump(ps, new_ident)
-            end
+            foreach(ps -> do_dump(ps, new_ident), p.value)
         end
     end
     do_dump(p,"")
@@ -177,12 +173,13 @@ function evaluate(p)
 end
 
 function apply(operator)
-    for i in input
-        p = parse_outer_packet!(buffer_from_string(i))
-        pre = i[1:6]
+    function apply_once(in)
+        p = parse_outer_packet!(buffer_from_string(in))
+        pre = in[1:6]
         v = operator(p)
         println("$pre, $v")
     end
+    foreach(apply_once, input)
 end
 
 function part1()
