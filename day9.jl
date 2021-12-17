@@ -1,5 +1,5 @@
 using ArgParse
-using Statistics
+
 s = ArgParseSettings()
 @add_arg_table s begin
     "--part2"
