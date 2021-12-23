@@ -20,7 +20,7 @@
             "name": "Test active Julia file",
             "program": "${file}",
             "args": ["--test",],
-            "stopOnEntry": false,
+            "stopOnEntry": true,
             "cwd": "${workspaceFolder}",
             "juliaEnv": "${command:activeJuliaEnvironment}"
         },
