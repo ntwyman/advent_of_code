@@ -1,5 +1,5 @@
 using ArgParse
-using LinearAlgebra
+# using LinearAlgebra
 
 
 s = ArgParseSettings()
@@ -97,11 +97,8 @@ function evolve_image(image::InfiniteImage) :: InfiniteImage
 end
 
 function part1()
-    println(initial_image)
     ev = evolve_image(initial_image)
-    println(ev)
     ev = evolve_image(ev)
-    println(ev)
     size(ev)
 end
 
@@ -109,7 +106,6 @@ function part2()
     ev = initial_image
     for i in 1:50
         ev = evolve_image(ev)
-        println(i)
     end
     size(ev)
 end

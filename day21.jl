@@ -1,6 +1,4 @@
 using ArgParse
-using LinearAlgebra
-
 
 s = ArgParseSettings()
 @add_arg_table s begin
@@ -59,7 +57,6 @@ function part1()
         end
     end
     losing_score = min(scores[1], scores[2])
-    println("$(losing_score) $(d.rolls)")
     losing_score * d.rolls
 end
 
@@ -141,19 +138,19 @@ function part2()
     wins2::BigInt = 0
     while true
         (w1, remains, state) = play(state, 1)
-        println("P1: wins $w1, remaining $remains")
+        # println("P1: wins $w1, remaining $remains")
         wins1 += w1
         if remains == 0
             break;
         end
         (w2, remains, state) = play(state, 2)
         wins2 += w2
-        println("P2: wins $w2, remaining $remains")
+        # println("P2: wins $w2, remaining $remains")
         if remains == 0
             break;
         end
     end
-    (wins1, wins2, wins1 + wins2)
+    max(wins1, wins2)
 end
 p = parsed_args["part2"] ? part2 : part1
 answer = p()

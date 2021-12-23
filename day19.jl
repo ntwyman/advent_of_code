@@ -74,31 +74,6 @@ function distance_map(scanner)
     dmap
 end
 
-# function count_shared(scanner1, scanner2)
-#     # Assumes both scanners are sorted
-#     pairs = zip(scanner1, scanner2)
-#     deltas = map(p -> p[1] - p[2], pairs)
-#     foreach(d -> println("    $d"), deltas)
-#     counts = Dict()
-#     for d in deltas
-#         c = get(counts, d , 0)
-#         counts[d] = c + 1
-#     end
-#     mx = 0
-#     for c in values(counts)
-#         mx = max(c, mx)
-#     end
-#     return mx
-# end
-
-# function rotate_scanner(index, rotation_index)
-#     rotation = rotations[rotation_index]
-#     scanner = scanners[index]
-#     rotated = map(b -> rotation * b, scanner)
-#     sort!(rotated)
-#     rotated
-# end
-
 function find_known()
     # println("Scanners - $(length(scanners))")
     make_rotations()
