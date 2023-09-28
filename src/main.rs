@@ -37,8 +37,7 @@ fn day1_part1(lines: Lines<BufReader<File>>) -> u32 {
 }
 
 fn day1_part2(lines: Lines<BufReader<File>>) -> u32 {
-    let x = elves_by_calories(lines);
-    x[0..3].iter().sum()
+    elves_by_calories(lines)[0..3].iter().sum()
 }
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
