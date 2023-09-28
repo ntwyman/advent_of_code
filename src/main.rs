@@ -1,5 +1,4 @@
 use clap::Parser;
-use std::cmp::max;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Lines, Result};
 
@@ -15,29 +14,32 @@ struct Args {
     part2: bool,
 }
 
-fn day1_part1(lines: Lines<BufReader<File>>) -> u32 {
-    struct Acc {
-        elf: u32,
-        max_elf: u32,
-    }
-    fn c(acc: Acc, line: Result<String>) -> Acc {
+fn elves_by_calories(lines: Lines<BufReader<File>>) -> Vec<u32> {
+    let mut elves: Vec<u32> = vec![0u32];
+    fn add_calories(mut elves: Vec<u32>, line: Result<String>) -> Vec<u32> {
         let l = line.unwrap();
         if l.is_empty() {
-            Acc {
-                elf: 0,
-                max_elf: acc.max_elf,
-            }
+            elves.push(0u32)
         } else {
-            let e = acc.elf + l.parse::<u32>().unwrap();
-            Acc {
-                elf: e,
-                max_elf: max(e, acc.max_elf),
-            }
+            let cals = elves.pop().unwrap() + l.parse::<u32>().unwrap();
+            elves.push(cals)
         }
+        elves
     }
-    lines.fold(Acc { elf: 0, max_elf: 0 }, c).max_elf
+    elves = lines.fold(elves, add_calories);
+    elves.sort();
+    elves.reverse();
+    elves
 }
 
+fn day1_part1(lines: Lines<BufReader<File>>) -> u32 {
+    elves_by_calories(lines)[0]
+}
+
+fn day1_part2(lines: Lines<BufReader<File>>) -> u32 {
+    let x = elves_by_calories(lines);
+    x[0..3].iter().sum()
+}
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
     let file_name = format!(
@@ -47,6 +49,7 @@ fn main() -> std::io::Result<()> {
     );
     let file = File::open(file_name)?;
     let reader = BufReader::new(file);
-    println!("{}", day1_part1(reader.lines()));
+    let part = if args.part2 { day1_part2 } else { day1_part1 };
+    println!("{}", part(reader.lines()));
     Ok(())
 }
