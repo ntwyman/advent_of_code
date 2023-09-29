@@ -18,11 +18,27 @@ fn score(play: Result<String>) -> u32 {
         wtf => panic!("We're playing rock paper scissors here - What is {} ", wtf),
     }
 }
+
+fn outcome(play: Result<String>) -> u32 {
+    match play.unwrap().as_str() {
+        "A X" => 3, // Lose -> scissors
+        "A Y" => 4, // Draw -> Rock
+        "A Z" => 8, // Win -> Paper
+        "B X" => 1, // Lose -> Rock
+        "B Y" => 5, // Draw -> Paper
+        "B Z" => 9, // Win -> Scissors
+        "C X" => 2, // Lose -> Paper
+        "C Y" => 6, // Draw -> Scissors
+        "C Z" => 7, // Win -> Rock
+        wtf => panic!("We're playing rock paper scissors here - What is {} ", wtf),
+    }
+}
+
 impl super::Day for Day2 {
     fn part1(self: &Self, lines: Lines<BufReader<File>>) -> u32 {
         lines.map(score).sum()
     }
-    fn part2(self: &Self, _lines: Lines<BufReader<File>>) -> u32 {
-        panic!("Todo")
+    fn part2(self: &Self, lines: Lines<BufReader<File>>) -> u32 {
+        lines.map(outcome).sum()
     }
 }
