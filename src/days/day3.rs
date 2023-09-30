@@ -12,13 +12,11 @@ fn priority_per_sack(line: Result<String>) -> u32 {
     let comp2 = BTreeSet::from_iter(l[s..].chars());
     let mistake = comp1.intersection(&comp2);
     let item = mistake.into_iter().next().unwrap();
-    let p = match item {
+    match item {
         'a'..='z' => *item as u32 - 96,
         'A'..='Z' => *item as u32 - 65 + 27,
         _ => panic!("Unrecognized item {}", item),
-    };
-    // println!("Item {} priority {}", item, p);
-    p
+    }
 }
 impl super::Day for Day3 {
     fn part1(self: &Self, lines: Lines<BufReader<File>>) -> u32 {
