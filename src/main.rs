@@ -3,6 +3,7 @@ mod days;
 use clap::Parser;
 use days::day1::Day1;
 use days::day2::Day2;
+use days::day3::Day3;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 #[derive(Parser, Debug)]
@@ -28,6 +29,7 @@ fn main() -> std::io::Result<()> {
     let day: &dyn days::Day = match args.day {
         1 => &Day1 {},
         2 => &Day2 {},
+        3 => &Day3 {},
         _ => panic!("Not implemented yet"),
     };
     println!(
