@@ -4,6 +4,7 @@ use clap::Parser;
 use days::day1::Day1;
 use days::day2::Day2;
 use days::day3::Day3;
+use days::day4::Day4;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 #[derive(Parser, Debug)]
@@ -30,6 +31,7 @@ fn main() -> std::io::Result<()> {
         1 => &Day1 {},
         2 => &Day2 {},
         3 => &Day3 {},
+        4 => &Day4 {},
         _ => panic!("Not implemented yet"),
     };
     println!(
