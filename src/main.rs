@@ -5,8 +5,11 @@ use days::day1::Day1;
 use days::day2::Day2;
 use days::day3::Day3;
 use days::day4::Day4;
+use days::day5::Day5;
+use itertools::Itertools;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+
 #[derive(Parser, Debug)]
 struct Args {
     #[arg(short, long)]
@@ -25,21 +28,28 @@ fn main() -> std::io::Result<()> {
         args.day,
         if args.test { "_test" } else { "" }
     );
+
+    // Files are not that big - just going to read it all in.
     let file = File::open(file_name)?;
-    let reader = BufReader::new(file);
+    let input = BufReader::new(file)
+        .lines()
+        .map(|l| l.unwrap())
+        .collect_vec();
+
     let day: &dyn days::Day = match args.day {
         1 => &Day1 {},
         2 => &Day2 {},
         3 => &Day3 {},
         4 => &Day4 {},
+        5 => &Day5 {},
         _ => panic!("Not implemented yet"),
     };
     println!(
         "{}",
         if args.part2 {
-            day.part2(reader.lines())
+            day.part2(input)
         } else {
-            day.part1(reader.lines())
+            day.part1(input)
         }
     );
     Ok(())

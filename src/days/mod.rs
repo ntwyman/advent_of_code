@@ -1,11 +1,15 @@
-use std::fs::File;
-use std::io::{BufReader, Lines};
+use std::fmt::Display;
 pub trait Day {
-    fn part1(&self, lines: Lines<BufReader<File>>) -> u32;
-    fn part2(&self, lines: Lines<BufReader<File>>) -> u32;
+    fn part1(&self, input: Vec<String>) -> Box<dyn Display>;
+    fn part2(&self, input: Vec<String>) -> Box<dyn Display>;
+
+    fn map_sum(&self, input: Vec<String>, mapper: fn(&String) -> u32) -> Box<dyn Display> {
+        Box::new(input.iter().map(mapper).sum::<u32>())
+    }
 }
 
 pub(super) mod day1;
 pub(super) mod day2;
 pub(super) mod day3;
 pub(super) mod day4;
+pub(super) mod day5;

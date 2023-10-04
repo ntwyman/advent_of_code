@@ -1,11 +1,8 @@
-use std::fs::File;
-use std::io::{BufReader, Lines};
-
+use std::fmt::Display;
 pub struct Day2;
-use std::io::Result;
 
-fn score(play: Result<String>) -> u32 {
-    match play.unwrap().as_str() {
+fn score(play: &String) -> u32 {
+    match play.as_str() {
         "A X" => 4, // 1 + 3 Rock: Rock draw
         "A Y" => 8, // 2 + 6 Rock: Paper win
         "A Z" => 3, // 3 + 0 Rock: Scissors loss
@@ -19,8 +16,8 @@ fn score(play: Result<String>) -> u32 {
     }
 }
 
-fn outcome(play: Result<String>) -> u32 {
-    match play.unwrap().as_str() {
+fn outcome(play: &String) -> u32 {
+    match play.as_str() {
         "A X" => 3, // Lose -> scissors
         "A Y" => 4, // Draw -> Rock
         "A Z" => 8, // Win -> Paper
@@ -35,10 +32,10 @@ fn outcome(play: Result<String>) -> u32 {
 }
 
 impl super::Day for Day2 {
-    fn part1(self: &Self, lines: Lines<BufReader<File>>) -> u32 {
-        lines.map(score).sum()
+    fn part1(self: &Self, input: Vec<String>) -> Box<dyn Display> {
+        self.map_sum(input, score)
     }
-    fn part2(self: &Self, lines: Lines<BufReader<File>>) -> u32 {
-        lines.map(outcome).sum()
+    fn part2(self: &Self, lines: Vec<String>) -> Box<dyn Display> {
+        self.map_sum(lines, outcome)
     }
 }
