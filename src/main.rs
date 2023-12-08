@@ -1,15 +1,10 @@
 mod days;
 
 use clap::Parser;
-use days::day1::Day1;
-use days::day2::Day2;
-use days::day3::Day3;
-use days::day4::Day4;
-use days::day5::Day5;
-use days::day6::Day6;
-use days::day7::Day7;
-use days::day8::Day8;
-use days::day9::Day9;
+use days::{
+    day1::Day1, day10::Day10, day2::Day2, day3::Day3, day4::Day4, day5::Day5, day6::Day6,
+    day7::Day7, day8::Day8, day9::Day9,
+};
 use itertools::Itertools;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -50,6 +45,7 @@ fn main() -> std::io::Result<()> {
         7 => &Day7 {},
         8 => &Day8 {},
         9 => &Day9 {},
+        10 => &Day10 {},
         _ => panic!("Not implemented yet"),
     };
     println!(
