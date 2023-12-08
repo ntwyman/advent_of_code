@@ -8,6 +8,7 @@ use days::day4::Day4;
 use days::day5::Day5;
 use days::day6::Day6;
 use days::day7::Day7;
+use days::day8::Day8;
 use itertools::Itertools;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -46,6 +47,7 @@ fn main() -> std::io::Result<()> {
         5 => &Day5 {},
         6 => &Day6 {},
         7 => &Day7 {},
+        8 => &Day8 {},
         _ => panic!("Not implemented yet"),
     };
     println!(
