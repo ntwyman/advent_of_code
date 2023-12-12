@@ -2,8 +2,8 @@ mod days;
 
 use clap::Parser;
 use days::{
-    day1::Day1, day10::Day10, day2::Day2, day3::Day3, day4::Day4, day5::Day5, day6::Day6,
-    day7::Day7, day8::Day8, day9::Day9,
+    day1::Day1, day10::Day10, day11::Day11, day2::Day2, day3::Day3, day4::Day4, day5::Day5,
+    day6::Day6, day7::Day7, day8::Day8, day9::Day9,
 };
 use itertools::Itertools;
 use std::fs::File;
@@ -46,6 +46,7 @@ fn main() -> std::io::Result<()> {
         8 => &Day8 {},
         9 => &Day9 {},
         10 => &Day10 {},
+        11 => &Day11 {},
         _ => panic!("Not implemented yet"),
     };
     println!(
