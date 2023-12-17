@@ -73,18 +73,11 @@ func findFirstNumber(line: String, backwards: Bool) -> Int? {
   }
   return nil
 }
+
 func part2Value(line: String) -> Int {
   let d1 = findFirstNumber(line: line, backwards: false)!
   let d2 = findFirstNumber(line: line, backwards: true)!
   return d1 * 10 + d2
-}
-
-func findValue(line: String, findNumber: (String) -> Int?) -> Int {
-  let d1 = findNumber(line)
-  let d2: Int? = findNumber(String(line.reversed()))
-
-  print("\(d1!):\(d2!) - \(line)")
-  return (d1! * 10) + d2!
 }
 
 class Day1: Day {
@@ -93,7 +86,6 @@ class Day1: Day {
   }
 
   func part2(lines: [String]) -> Any {
-    lines.map(part2Value(line:)).reduce(
-      0, +)
+    lines.map(part2Value(line:)).reduce(0, +)
   }
 }
