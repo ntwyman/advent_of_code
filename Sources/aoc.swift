@@ -1,23 +1,7 @@
 import ArgumentParser
 import Foundation
 
-protocol Day {}
-
-func findFirstDigit(line: String) -> Int? {
-  for c in line {
-    if c.isWholeNumber {
-      return c.wholeNumberValue
-    }
-  }
-  print("Digit not found in \(line)")
-  return nil
-
-}
-
-func findValue(line: String) -> Int {
-  let d = findFirstDigit(line: line)
-  return (d! * 10) + findFirstDigit(line: String(line.reversed()))!
-}
+let days: [Day] = [Day1()]
 
 @main
 struct AOC: ParsableCommand {
@@ -39,7 +23,18 @@ struct AOC: ParsableCommand {
     let fileData = fileManager.contents(atPath: input)
     let contents = String(data: fileData!, encoding: .utf8)
     let lines = contents!.components(separatedBy: NSCharacterSet.newlines)
-    print(lines.map(findValue(line:)).reduce(0, +))
 
+    if day > days.count {
+      print("Not implemented yet")
+    } else {
+      let d = days[day - 1]
+      let result =
+        if part2 {
+          d.part2(lines: lines)
+        } else {
+          d.part1(lines: lines)
+        }
+      print(result)
+    }
   }
 }
