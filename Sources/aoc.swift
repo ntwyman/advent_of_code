@@ -1,7 +1,7 @@
 import ArgumentParser
 import Foundation
 
-let days: [Day] = [Day1()]
+let days: [Day] = [Day1(), Day2()]
 
 @main
 struct AOC: ParsableCommand {
@@ -17,16 +17,19 @@ struct AOC: ParsableCommand {
   public func run() throws {
     print("Running day \(day)")
 
-    let testStr = test ? "_test" : ""
-    let input = "input/day\(day)\(testStr).txt"
-    let fileManager = FileManager.default
-    let fileData = fileManager.contents(atPath: input)
-    let contents = String(data: fileData!, encoding: .utf8)
-    let lines = contents!.components(separatedBy: NSCharacterSet.newlines)
-
     if day > days.count {
       print("Not implemented yet")
     } else {
+      let testStr = test ? "_test" : ""
+      let input = "input/day\(day)\(testStr).txt"
+      let fileManager = FileManager.default
+      let fileData = fileManager.contents(atPath: input)
+      if fileData == nil {
+        print("Missing file data")
+        return
+      }
+      let contents = String(data: fileData!, encoding: .utf8)
+      let lines = contents!.components(separatedBy: NSCharacterSet.newlines)
       let d = days[day - 1]
       let result =
         if part2 {
