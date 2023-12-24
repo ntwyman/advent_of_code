@@ -1,7 +1,7 @@
 import ArgumentParser
 import Foundation
 
-let days: [Day] = [Day1(), Day2()]
+let days: [Day] = [Day1(), Day2(), Day3()]
 
 @main
 struct AOC: ParsableCommand {
