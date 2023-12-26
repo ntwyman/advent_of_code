@@ -43,7 +43,20 @@ class Day4: Day {
   }
 
   func part2(lines: [String]) -> Any {
-    "Not implemented"
+    var cards = lines.filter({ $0.isEmpty == false }).map({ (1, Scratcher.init(line: $0)) })
+    for i in 0..<cards.count - 1 {
+      let (count, card) = cards[i]
+      let wins = card.wins()
+      if wins != 0 {
+        for inc in i + 1...i + wins {
+          if inc >= cards.count {
+            break
+          }
+          let (co, ca) = cards[inc]
+          cards[inc] = (co + count, ca)
+        }
+      }
+    }
+    return cards.reduce(0, { (acc: Int, entry: (Int, Scratcher)) -> Int in return acc + entry.0 })
   }
-
 }
