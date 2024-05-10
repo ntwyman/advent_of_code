@@ -1,0 +1,74 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="examples\" />
+    <Folder Include="inputs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inputs\day19.txt" />
+    <None Include="inputs\day1.txt" />
+    <None Include="inputs\day2.txt" />
+    <None Include="inputs\day3.txt" />
+    <None Include="inputs\day4.txt" />
+    <None Include="inputs\day5.txt" />
+    <None Include="inputs\day6.txt" />
+    <None Include="inputs\day7.txt" />
+    <None Include="inputs\day8.txt" />
+    <None Include="inputs\day9.txt" />
+    <None Include="inputs\day10.txt" />
+    <None Include="inputs\day11.txt" />
+    <None Include="inputs\day12.txt" />
+    <None Include="inputs\day13.txt" />
+    <None Include="inputs\day14.txt" />
+    <None Include="inputs\day15.txt" />
+    <None Include="inputs\day16.txt" />
+    <None Include="inputs\day17.txt" />
+    <None Include="inputs\day18.txt" />
+    <None Include="examples\day1.txt" />
+    <None Include="examples\day2.txt" />
+    <None Include="examples\day3.txt" />
+    <None Include="examples\day4.txt" />
+    <None Include="examples\day5.txt" />
+    <None Include="examples\day6.txt" />
+    <None Include="examples\day7.txt" />
+    <None Include="examples\day8.txt" />
+    <None Include="examples\day9.txt" />
+    <None Include="examples\day10.txt" />
+    <None Include="examples\day11.txt" />
+    <None Include="examples\day12.txt" />
+    <None Include="examples\day13.txt" />
+    <None Include="examples\day14.txt" />
+    <None Include="examples\day15.txt" />
+    <None Include="examples\day16.txt" />
+    <None Include="examples\day17.txt" />
+    <None Include="examples\day18.txt" />
+    <None Include="examples\day19.txt" />
+    <Compile Include="types.fs" />
+    <Compile Include="day1.fs" />
+    <Compile Include="day2.fs" />
+    <Compile Include="day3.fs" />
+    <Compile Include="day4.fs" />
+    <Compile Include="day5.fs" />
+    <Compile Include="day6.fs" />
+    <Compile Include="day7.fs" />
+    <Compile Include="day8.fs" />
+    <Compile Include="day9.fs" />
+    <Compile Include="day10.fs" />
+    <Compile Include="day11.fs" />
+    <Compile Include="day12.fs" />
+    <Compile Include="day13.fs" />
+    <Compile Include="day14.fs" />
+    <Compile Include="day15.fs" />
+    <Compile Include="day16.fs" />
+    <Compile Include="day17.fs" />
+    <Compile Include="day18.fs" />
+    <Compile Include="day19.fs" />
+    <Compile Include="cli.fs" />
+    <PackageReference Include="NUnit" Version="3.12.0">
+      <GeneratePathProperty></GeneratePathProperty>
+    </PackageReference>
+  </ItemGroup>
+</Project>
