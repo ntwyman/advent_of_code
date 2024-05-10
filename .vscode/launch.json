@@ -1,0 +1,48 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "julia",
+            "request": "launch",
+            "name": "Run active Julia file",
+            "program": "${file}",
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}",
+            "juliaEnv": "${command:activeJuliaEnvironment}"
+        },
+        {
+            "type": "julia",
+            "request": "launch",
+            "name": "Test active Julia file",
+            "program": "${file}",
+            "args": ["--test",],
+            "stopOnEntry": true,
+            "cwd": "${workspaceFolder}",
+            "juliaEnv": "${command:activeJuliaEnvironment}"
+        },
+        {
+            "type": "julia",
+            "request": "launch",
+            "name": "Part2 active Julia file",
+            "program": "${file}",
+            "stopOnEntry": false,
+            "args" : ["--part2",],
+            "cwd": "${workspaceFolder}",
+            "juliaEnv": "${command:activeJuliaEnvironment}"
+        },
+        {
+            "type": "julia",
+            "request": "launch",
+            "name": "Part2 test active Julia file",
+            "program": "${file}",
+            "args": ["--test", "--part2"],
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}",
+            "juliaEnv": "${command:activeJuliaEnvironment}"
+        },
+    ]
+}
