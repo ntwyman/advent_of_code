@@ -18,7 +18,7 @@ fn elves_by_calories(input: Vec<String>) -> Vec<u32> {
 
 pub struct Day1;
 impl super::Day for Day1 {
-    fn part1(self: &Self, input: Vec<String>) -> Box<(dyn Display)> {
+    fn part1(self: &Self, input: Vec<String>) -> Box<dyn Display> {
         Box::new(elves_by_calories(input)[0])
     }
     fn part2(self: &Self, input: Vec<String>) -> Box<dyn Display> {

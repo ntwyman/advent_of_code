@@ -9,3 +9,5 @@ I tend to try a "new" language each year. Its a good excuse to try something new
 * 2021 - Julia
 * 2022 - Rust
 * 2023 - Swift (it's been a while so I figured a quick refresher wouldn't hurt)
+* 2024 - Nim (Gave up after day 1. Don't recall why)
+* 2025 -
