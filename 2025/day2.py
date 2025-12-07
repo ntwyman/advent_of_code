@@ -1,6 +1,3 @@
-from math import ceil
-
-
 def find_invalid(start: str, end: str) -> list[int]:
     return []
 
@@ -21,7 +18,7 @@ def lower_limit(bound: str) -> int:
 
 
 def upper_limit(bound: str) -> int:
-    l = len(bound)
+    l = len(bound)  # noqa: E741
     l2 = int(l / 2)
     if (l % 2) == 0:
         end = int(bound[0:l2])
